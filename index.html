@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Game</title>
+	<style type="text/css">
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: sans-serif;
+		}
+		#game-container {
+			background-color: beige;
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+		}
+		#game-score {
+			width: 100vw;
+			height: 50px;
+			font-size: 24px;
+			color: white;
+			background-color: lightcoral;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#character {
+			font-size: 50px;
+			line-height: 50px;
+			height: 50px;
+			width: 50px;
+			/*background-color: orchid;*/
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			position: absolute;
+			bottom: 100px;
+		}
+		.character-jump{
+		    animation: jump 0.6s linear;
+		}
+		@keyframes jump{
+		    0%{bottom: 100px;}
+		    30%{bottom: 200px;}
+		    70%{bottom: 200px;}
+		    100%{bottom: 100px;}
+		}
+		#obstacle {
+			font-size: 50px;
+			line-height: 50px;
+			height: 50px;
+			width: 50px;
+			/*background-color: mediumvioletred;*/
+			display: flex;
+			align-items: flex-end;
+			position: absolute;
+			bottom: 100px;
+			right: 0;
+		}
+		.obstacle-animation {
+			animation: obstacle-keyframes 2.0s linear infinite;
+		}
+		@keyframes obstacle-keyframes {
+			0% {
+				left: 100vw;
+			}
+			100% {
+				left: -50px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="game-container">
+		<div id="game-score">Score: 0</div>
+		<div id="obstacle">🌵</div>
+		<div id="character">🙂</div>
+	</div>
+	<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
