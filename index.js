@@ -2,52 +2,62 @@
 
 let game = document.getElementById('game-container')
 let character = document.getElementById('character')
+let characterAnimation
 let obstacle = document.getElementById('obstacle')
+let obstacleAnimation
 let gameScore = document.getElementById('game-score')
+let restartButton = document.getElementById('restart')
 let gameStatus = ''
 let isJumping = false
 let isCrossing = false
 let score = 0
 
+function gameLoad() {
+	// reset objects to initial state
+	character.classList.remove('character-animation')
+	obstacle.classList.remove('obstacle-animation')
+	// trigger DOM reflow
+	obstacle.offsetHeight
+	character.offsetHeight
+	// Ad animations and initialise animation reference
+	character.classList.add('character-animation')
+	obstacle.classList.add('obstacle-animation')
+	characterAnimation = character.getAnimations()[0]
+	obstacleAnimation = obstacle.getAnimations()[0]
+	// Pause animation from starting right away
+	obstacleAnimation.pause()
+	characterAnimation.pause()
+	score = 0
+	gameScore.textContent = 'Score: ' + score
+}
+
 function gameStart() {
 	gameStatus = 'playing'
-	obstacle.classList.add("obstacle-animation")
+	character.textContent = '🙂'
+	obstacleAnimation.play()
 	score = 0
+	gameScore.textContent = 'Score: ' + score
 }
 
 function gameEnd() {
-	character.classList.remove("character-jump")
-	obstacle.classList.remove("obstacle-animation")
+	character.textContent = '😵'
+	obstacleAnimation.pause()
+	characterAnimation.pause()
 	gameStatus = 'lost'
-	alert('You lost!')
+	restartButton.style.visibility = 'visible'
+	// alert('You lost!')
 }
 
-function jump() {
-	if (isJumping) {
-		return
-	}
-	if (!['playing', 'lost'].includes(gameStatus)) {
-		gameStart()
-	}
-	isJumping = true
-	character.classList.add('character-jump')
-	setTimeout(()=>{
-		character.classList.remove("character-jump")
-		isJumping = false
-    },700);
+function restartGame() {
+	restartButton.style.visibility = 'hidden'
+	obstacleAnimation.cancel()
+	characterAnimation.finish()
+	gameLoad()
+	gameStart()
 }
 
-function handleKeyDown(e) {
-	console.log(e.key)
-	if (e.key === ' ') {
-		jump()
-	} else return
-}
-
-game.onclick = jump
-window.addEventListener('keydown', handleKeyDown)
-
-setInterval(() => {
+function gameTick() {
+	if (gameStatus === 'lost') {return}
 	let characterX = parseInt(window.getComputedStyle(character).getPropertyValue('left'))
 	let characterY = parseInt(window.getComputedStyle(character).getPropertyValue('top'))
 	let obstacleX = parseInt(window.getComputedStyle(obstacle).getPropertyValue('left'))
@@ -57,8 +67,9 @@ setInterval(() => {
 	let gapY = Math.abs(characterY - obstacleY)
 	// console.log('gapX:', gapX, ', gapY:', gapY)
 	if (gapX < 35 && gapY <= 50) {
+		
+		// console.log('gapX:', gapX, ', gapY:', gapY)
 		gameEnd()
-		console.log('gapX:', gapX, ', gapY:', gapY)
 	} else if (gapX < 35 && gapY > 50 && !isCrossing) {
 		isCrossing = true
 		score++
@@ -67,5 +78,28 @@ setInterval(() => {
             isCrossing=false;
         }, 200);
 	}
-}, 50)
+}
+
+function jump() {
+	if (!['paused','finished'].includes(characterAnimation.playState)) {
+		return
+	}
+	if (!['playing', 'lost'].includes(gameStatus)) {
+		gameStart()
+	} else if (gameStatus === 'lost'){return}
+	characterAnimation.play()
+}
+
+function handleKeyDown(e) {
+	console.log(e.key)
+	if (e.key === ' ') {
+		jump()
+	} else return
+}
+
+gameLoad()
+game.onclick = jump
+restartButton.onclick = restartGame
+window.addEventListener('keydown', handleKeyDown)
+setInterval(gameTick, 50)
 

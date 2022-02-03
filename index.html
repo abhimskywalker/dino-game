@@ -9,6 +9,7 @@
 			padding: 0;
 			margin: 0;
 			font-family: sans-serif;
+			user-select: none;
 		}
 		#game-container {
 			background-color: beige;
@@ -40,6 +41,7 @@
 		}
 		.character-jump{
 		    animation: jump 0.6s linear;
+		    animation-fill-mode: forwards;
 		}
 		@keyframes jump{
 		    0%{bottom: 100px;}
@@ -61,6 +63,7 @@
 		}
 		.obstacle-animation {
 			animation: obstacle-keyframes 2.0s linear infinite;
+			/*animation-fill-mode: forwards;*/
 		}
 		@keyframes obstacle-keyframes {
 			0% {
@@ -70,13 +73,38 @@
 				left: -50px;
 			}
 		}
+		.paused {
+			animation-play-state: paused;
+		}
+		.animation-off {
+			animation-name: none;
+		}
+		#restart-wrapper {
+			top: 50%;
+			width: 100%;
+			position: absolute;
+		}
+		#restart {
+			margin: auto;
+			width: fit-content;
+			background-color: mediumseagreen;
+			color: white;
+			border-radius: 50px;
+			padding: 15px;
+			font-size: 30px;
+			visibility: hidden;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
 	<div id="game-container">
 		<div id="game-score">Score: 0</div>
-		<div id="obstacle">🌵</div>
-		<div id="character">🙂</div>
+		<div id="obstacle" class="obstacle-animation">🌵</div>
+		<div id="character" class="character-jump">🙂</div>
+		<div id="restart-wrapper">
+			<div id="restart">Play Again 💪</div>
+		</div>
 	</div>
 	<script type="text/javascript" src="index.js"></script>
 </body>
