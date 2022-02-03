@@ -11,6 +11,18 @@ let gameStatus = ''
 let isJumping = false
 let isCrossing = false
 let score = 0
+let highScore = 0
+let gameLoop
+
+function updateScore() {
+	let highScoreEmoji = ''
+	if (score > highScore) {
+		highScore = score
+		highScoreEmoji = '🔥'
+		localStorage.setItem('highScore', highScore)
+	}
+	gameScore.textContent = 'Score: ' + score + '  ' + highScoreEmoji + '  |   💪 High Score: ' + highScore 
+}
 
 function gameLoad() {
 	// reset objects to initial state
@@ -28,7 +40,8 @@ function gameLoad() {
 	obstacleAnimation.pause()
 	characterAnimation.pause()
 	score = 0
-	gameScore.textContent = 'Score: ' + score
+	highScore = parseInt(JSON.parse(localStorage.getItem('highScore')) || 0)
+	updateScore()
 }
 
 function gameStart() {
@@ -36,7 +49,8 @@ function gameStart() {
 	character.textContent = '🙂'
 	obstacleAnimation.play()
 	score = 0
-	gameScore.textContent = 'Score: ' + score
+	updateScore()
+	gameLoop = setInterval(gameTick, 50)
 }
 
 function gameEnd() {
@@ -45,7 +59,7 @@ function gameEnd() {
 	characterAnimation.pause()
 	gameStatus = 'lost'
 	restartButton.style.visibility = 'visible'
-	// alert('You lost!')
+	clearInterval(gameLoop)
 }
 
 function restartGame() {
@@ -67,13 +81,12 @@ function gameTick() {
 	let gapY = Math.abs(characterY - obstacleY)
 	// console.log('gapX:', gapX, ', gapY:', gapY)
 	if (gapX < 35 && gapY <= 50) {
-		
 		// console.log('gapX:', gapX, ', gapY:', gapY)
 		gameEnd()
 	} else if (gapX < 35 && gapY > 50 && !isCrossing) {
 		isCrossing = true
 		score++
-		gameScore.textContent = 'Score: ' + score
+		updateScore()
 		setTimeout(() => {
             isCrossing=false;
         }, 200);
@@ -101,5 +114,3 @@ gameLoad()
 game.onclick = jump
 restartButton.onclick = restartGame
 window.addEventListener('keydown', handleKeyDown)
-setInterval(gameTick, 50)
-
