@@ -89,7 +89,8 @@ function gameTick() {
 		updateScore()
 		setTimeout(() => {
             isCrossing=false;
-        }, 200);
+            // obstacle.textContent = ['🌵','🦖','🍄'][Math.floor(Math.random()*3)]
+        }, 300);
 	}
 }
 
